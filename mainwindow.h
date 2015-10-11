@@ -9,6 +9,9 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = 0);
+    void paintEvent(QPaintEvent *);
+    void mousePressEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
     ~MainWindow();
 };
 
