@@ -10,9 +10,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = checkers
 TEMPLATE = app
-
+CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    pieces.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    pieces.h
