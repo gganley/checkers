@@ -1,5 +1,7 @@
-void Piece::draw(QPaintDevice *e)
+#include "pieces.h"
+
+void Piece::draw(QPainter *e)
 {
-  QPainter painter(e);
-  painter.paintEllipse(QPoint(x,y), 40, 40);
+  e->setBrush(c);
+  e->drawEllipse(QPoint(x,y), 40, 40);
 }
