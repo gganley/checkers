@@ -1,3 +1,5 @@
+// this is some horrible hacking I'm sorry my functional gods
+
 #include "mainwindow.h"
 
 
@@ -14,17 +16,19 @@ MainWindow::MainWindow(QWidget *parent)
   for (int i = 0; i < 8; ++i) {
     // Player1 or top rows
     if (i % 2 == 0) {
-      Player1.push_back(Piece(bufferL + (i * 80), 0 + bufferU, QColor(0,0,0)));
+      Black.push_back(Piece(bufferL + (i * 80), 0 + bufferU, QColor(0,0,0)));
+      Black.push_back(Piece(bufferL + (i * 80), 2 * 80 + bufferU, QColor(0,0,0)));
     } else {
-      Player1.push_back(Piece(bufferL + (i * 80), 1 * 80 + bufferU, QColor(0,0,0)));
+      Black.push_back(Piece(bufferL + (i * 80), 1 * 80 + bufferU, QColor(0,0,0)));
     }
   }
 
   for (int i = 0; i < 8; ++i) {
     if (i % 2 == 0) {
-      Player2.push_back(Piece(bufferL + (i * 80), 6 * 80 + bufferU, QColor(255,0,0)));      
+      Red.push_back(Piece(bufferL + (i * 80), 6 * 80 + bufferU, QColor(255,0,0)));
     } else {
-      Player2.push_back(Piece(bufferL + (i * 80), 7 * 80 + bufferU, QColor(255,0,0)));
+      Red.push_back(Piece(bufferL + (i * 80), 7 * 80 + bufferU, QColor(255,0,0)));
+      Red.push_back(Piece(bufferL + (i * 80), 5 * 80 + bufferU, QColor(255,0,0)));
     }
   }
 }
@@ -37,52 +41,103 @@ MainWindow::~MainWindow()
 void MainWindow::paintEvent(QPaintEvent *)
 {
   qDebug() << "painted at " << time(0) << endl;
-  QPainter p(this);
-  bool b = true;
-  int bufferL, bufferU = 0;
-  for (int i = 0; i < 8; ++i) {
-      for (int j = 0; j < 8; ++j) {
-          if (b) {
-              p.fillRect(bufferL, bufferU, 80, 80, QColor(125,125,125));
-          } else {
-              p.fillRect(bufferL, bufferU, 80, 80, QColor(255,255,255));
-          }
-          b = !b;
-          bufferL += 80;
-      }
-      b = !b;
-      bufferL = 0;
-      bufferU += 80;
-  }
-  
-  for (Piece x: Player1) {
-    x.draw(&p);
-  }
-  for (Piece x: Player2) {
-    x.draw(&p);
-  }
-  
+  QPainter *p = new QPainter(this);
+
+  // BOARD ISNT DRAWING WTF
+  drawBoard(p);
+  drawPieces(p);
 }
 
-//void MainWindow::mousePressEvent(QMouseEvent *e)
-void MainWindow::mousePressEvent(QMouseEvent *)
+void MainWindow::mousePressEvent(QMouseEvent *e)
 {
-  
+  mouseX = e->x();
+  mouseY = e->y();
+  int ownedBy = owner(mouseX, mouseY);
+  switch (ownedBy) {
+  case 1:
+    for (auto a : Red) {
+      if(a->compare(std::make_pair(mouseX / 80, mouseY / 80)))
+	selected = a;
+    }
+    break;
+  case 2:
+    for (auto a : Black) {
+      if (a->compare(std::make_pair(mouseX / 80, mouseY / 80)))
+	selected = a;
+    }
+    break;
+  }
+     
+  // check if turn owner owns the piece
+  // bind checker piece to move with cursor
 }
 
-//void MainWindow::mouseReleaseEvent(QMouseEvent *e)
-void MainWindow::mouseReleaseEvent(QMouseEvent *)
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 {
+  int endX = e->x();
+  int endY = e->y();
+  bool tryingToJump;
+  bool tryingToMove;
+
   
 }
 
-void MainWindow::drawPieces(QPainter *)
+void MainWindow::drawPieces(QPainter *p)
 {  
-
+  for (Piece x: Red) {
+    x.draw(p);
+  }
+  for (Piece x: Black) {
+    x.draw(p);
+  }
 }
 
-void drawBoard(QPainter *)
+void drawBoard(QPainter *p)
+{
+  bool b = true;
+  int bufferL = 0;
+  int bufferU = 0;
+  
+  for (int i = 0; i < 8; ++i) {
+    for (int j = 0; j < 8; ++j) {
+      
+      if (b) {
+	p->fillRect(bufferL, bufferU, 80, 80, QColor(125,125,125));
+      } else {
+	p->fillRect(bufferL, bufferU, 80, 80, QColor(255,255,255));
+      }
+      
+      b = !b;
+      bufferL += 80;
+      
+    }
+    
+    b = !b;
+    bufferL = 0;
+    bufferU += 80;
+  }
+}
+
+int MainWindow::owner(int x, int y)
 {
 
-}
 
+  for (Piece n : Black) {
+    auto a = n.getPos();
+    int posX = a.first;
+    int posY = a.second;
+    if (posX / 80 == x / 80 && posY / 80 == y / 80) {
+      return 1;
+    }
+  }
+  for (Piece n : Red) {
+    auto a = n.getPos();
+    int posX = a.first;
+    int posY = a.second;
+    if (posX / 80 == x / 80 && posY / 80 == y / 80) {
+      return 2;
+    }
+  }
+  return 0;
+}
