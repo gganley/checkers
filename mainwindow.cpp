@@ -53,16 +53,17 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
   mouseY = e->y();
   int ownedBy = owner(mouseX, mouseY);
   switch (ownedBy) {
-  case 1:
+  case 2:
     for (auto a : Red) {
-      if(a->compare(std::make_pair(mouseX / 80, mouseY / 80)))
-	selected = a;
+      if(a->compareCords(std::make_pair(mouseX / 80, mouseY / 80))){
+        selected = a;
+      }
     }
     break;
-  case 2:
+  case 1:
     for (auto a : Black) {
-      if (a->compare(std::make_pair(mouseX / 80, mouseY / 80)))
-	selected = a;
+      if (a->compareCords(std::make_pair(mouseX / 80, mouseY / 80)))
+    selected = a;
     }
     break;
   }
