@@ -12,23 +12,23 @@ MainWindow::MainWindow(QWidget *parent)
   // buffer so that ellipse is in the middle
   int bufferL = 40;
   int bufferU = 40;
-  
+  resize(640, 640);
   for (int i = 0; i < 8; ++i) {
     // Player1 or top rows
     if (i % 2 == 0) {
-      Black.push_back(Piece(bufferL + (i * 80), 0 + bufferU, QColor(0,0,0)));
-      Black.push_back(Piece(bufferL + (i * 80), 2 * 80 + bufferU, QColor(0,0,0)));
+      Black.push_back(new Piece(bufferL + (i * 80), 0 + bufferU, QColor(0,0,0)));
+      Black.push_back(new Piece(bufferL + (i * 80), 2 * 80 + bufferU, QColor(0,0,0)));
     } else {
-      Black.push_back(Piece(bufferL + (i * 80), 1 * 80 + bufferU, QColor(0,0,0)));
+      Black.push_back(new Piece(bufferL + (i * 80), 1 * 80 + bufferU, QColor(0,0,0)));
     }
   }
 
   for (int i = 0; i < 8; ++i) {
     if (i % 2 == 0) {
-      Red.push_back(Piece(bufferL + (i * 80), 6 * 80 + bufferU, QColor(255,0,0)));
+      Red.push_back(new Piece(bufferL + (i * 80), 6 * 80 + bufferU, QColor(255,0,0)));
     } else {
-      Red.push_back(Piece(bufferL + (i * 80), 7 * 80 + bufferU, QColor(255,0,0)));
-      Red.push_back(Piece(bufferL + (i * 80), 5 * 80 + bufferU, QColor(255,0,0)));
+      Red.push_back(new Piece(bufferL + (i * 80), 7 * 80 + bufferU, QColor(255,0,0)));
+      Red.push_back(new Piece(bufferL + (i * 80), 5 * 80 + bufferU, QColor(255,0,0)));
     }
   }
 }
