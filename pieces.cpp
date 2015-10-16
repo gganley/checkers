@@ -25,13 +25,13 @@ void Piece::setCords(std::pair<int,int> n)
 
 bool Piece::compareCords(std::pair<int,int> n)
 {
-  if (posX / 80 == n.first / 80 && posY / 80 == n.second / 80)
+  if (posX / 80 == n.first && posY / 80 == n.second)
     return true;
 
   return false;
 }
 
-std::pair<int,int> getCords()
+std::pair<int,int> Piece::getCords()
 {
   return std::make_pair(posX / 80, posY / 80);
 }
