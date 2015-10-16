@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow
   std::vector<Piece*> Black;
   int mouseX, mouseY;
   bool turn = true; // true == red, false == black
+  Piece* selected;
 public:
   MainWindow(QWidget *parent = 0);
   void paintEvent(QPaintEvent *);
