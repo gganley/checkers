@@ -202,16 +202,16 @@ int MainWindow::owner(int x, int y)
 {
 
 
-  for (Piece n : Black) {
-    auto a = n.getPos();
+  for (auto n : Black) {
+    auto a = n->getPos();
     int posX = a.first;
     int posY = a.second;
     if (posX / 80 == x / 80 && posY / 80 == y / 80) {
       return 1;
     }
   }
-  for (Piece n : Red) {
-    auto a = n.getPos();
+  for (auto n : Red) {
+    auto a = n->getPos();
     int posX = a.first;
     int posY = a.second;
     if (posX / 80 == x / 80 && posY / 80 == y / 80) {
