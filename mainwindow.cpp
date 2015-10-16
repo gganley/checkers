@@ -77,19 +77,98 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 {
   int endX = e->x();
   int endY = e->y();
-  bool tryingToJump;
-  bool tryingToMove;
+  bool tryingToMove = abs((endX / 80) - (mouseX / 80)) == 1 && abs((endY / 80) - (mouseY / 80)) == 1;
+  bool tryingToJump = abs((endX / 80) - (mouseX / 80)) == 2 && abs((endY / 80) - (mouseY / 80)) == 2;
 
+  // check if trying to jump or just trying to move
   
+  if (tryingToMove) {
+    switch(owner(endX, endY)) {
+    case 0:
+      
+      selected->setCords(std::make_pair(endX / 80, endY / 80));
+      repaint();
+    }
+  } else if (tryingToJump) {
+    Piece* jumpedPiece;
+    switch(owner(mouseX, mouseY)) {
+    case 1:
+      //black
+      // y should be positive and linear with x
+      if ((endX / 80) - (mouseX / 80) == 2 && (endY / 80) - (mouseY / 80) == 2) {
+	switch (owner(mouseX + 80, mouseY + 80)) {
+	  // move and remove red piece
+    case 2:
+	  for (auto a : Red) {
+          qDebug() << a->getCords().second << a->getCords().first;
+        if (a->compareCords(std::make_pair((mouseX / 80) + 1, (mouseY / 80) + 1))){
+          jumpedPiece = a;
+          break;
+	    }
+	  }
+	  Red.erase(std::find(Red.begin(), Red.end(), jumpedPiece));
+	  selected->setCords(std::make_pair(endX / 80, endY / 80));
+	  repaint();
+	  break;
+	}
+      } else if ((endX / 80) - (mouseX / 80) == -2 && (endY / 80) - (mouseY / 80) == 2) {
+	switch (owner(mouseX - 80, mouseY + 80)) {
+	case 2:
+	  // move and remove red piece
+	  for (auto a : Red) {
+        if (a->compareCords(std::make_pair((mouseX / 80) - 1, (mouseY / 80) + 1))) {
+	      jumpedPiece = a;
+	      break;
+	    }
+	  }
+	  Red.erase(std::find(Red.begin(), Red.end(), jumpedPiece));
+	  selected->setCords(std::make_pair(endX / 80, endY / 80));
+	  repaint();
+	}
+      }
+      break;
+    case 2:
+      // red
+      // y should be negitaive and linear with x
+      if ((endX / 80) - (mouseX / 80) == 2 && (endY / 80) - (mouseY / 80) == -2) {
+	switch (owner(mouseX + 80, mouseY - 80)) {
+	case 1:
+	  for (auto a : Black) {
+        if (a->compareCords(std::make_pair((mouseX / 80) + 1, (mouseY / 80) - 1))) {
+	      jumpedPiece = a;
+	      break;
+	    }
+	  }
+	  Black.erase(std::find(Black.begin(), Black.end(), jumpedPiece));
+	  selected->setCords(std::make_pair(endX / 80, endY / 80));
+	  repaint();
+	}
+      } else if ((endX / 80) - (mouseX / 80) == -2 && (endY / 80) - (mouseY / 80) == -2){
+	switch (owner(mouseX - 80, mouseY - 80)) {
+	case 1:
+	  for (auto a : Black) {
+        if (a->compareCords(std::make_pair((mouseX / 80) - 1, (mouseY / 80) - 1))) {
+	      jumpedPiece = a;
+	      break;
+	    }
+	  }
+	  Black.erase(std::find(Black.begin(), Black.end(), jumpedPiece));
+	  selected->setCords(std::make_pair(endX / 80, endY / 80));
+	  repaint();	  
+	}
+      }
+      break;
+    }
+  }
 }
 
 void MainWindow::drawPieces(QPainter *p)
 {  
-  for (Piece x: Red) {
-    x.draw(p);
+  for (auto x: Red) {
+    x->draw(p);
   }
-  for (Piece x: Black) {
-    x.draw(p);
+  for (auto x: Black) {
+    x->draw(p);
   }
 }
 
