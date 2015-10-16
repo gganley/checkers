@@ -40,7 +40,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *)
 {
-  qDebug() << "painted at " << time(0) << endl;
   QPainter *p = new QPainter(this);
 
   // BOARD ISNT DRAWING WTF
