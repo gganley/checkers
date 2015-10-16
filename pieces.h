@@ -20,7 +20,7 @@ public:
   std::pair<int,int> getCords();
   void setPos(std::pair<int,int>);
   void setCords(std::pair<int,int>);
-  bool compareCords(std::pair<int,int>)
+  bool compareCords(std::pair<int,int>);
 };
 
 #endif // PIECES
