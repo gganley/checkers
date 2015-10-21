@@ -296,9 +296,9 @@ int MainWindow::owner(int x, int y)
 void MainWindow::anyNewKings()
 {
   for (auto p : Red) 
-    if (p->getCords().second == 0)
+    if (p->getCords().second == 0 && !p->isKing())
       p->setKing(true);
   for (auto p : Black) 
-    if (p->getCords().second == 7)
+    if (p->getCords().second == 7 && !p->isKing())
       p->setKing(true);  
 }

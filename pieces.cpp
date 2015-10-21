@@ -2,6 +2,7 @@
 
 void Piece::draw(QPainter *e)
 {
+  
   e->setBrush(c);
   e->drawEllipse(QPoint(posX,posY), 40, 40);
   if (isKing()) {
@@ -14,7 +15,7 @@ void Piece::draw(QPainter *e)
 
   } 
   
-
+  e->setPen(QColor(0,0,0));
 
 }
 
