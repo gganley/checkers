@@ -35,3 +35,13 @@ std::pair<int,int> Piece::getCords()
 {
   return std::make_pair(posX / 80, posY / 80);
 }
+
+bool Piece::isKing()
+{
+  return king;
+}
+
+void Piece::setKing(bool x)
+{
+  king = x;
+}
