@@ -75,92 +75,91 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 {
+  // check if you pressed a piece
+  if (owner(mouseX,mouseY) == 0)
+    return;
+  // check if vector is well behaved
+  if (
+      // if not proper either one of these
+      !(
+	// if move
+	(abs(endX / 80 - mouseX / 80) == 1 && abs(endY / 80 - mouseY / 80) == 1)
+	// if jump
+     || (abs(endX / 80 - mouseX / 80) == 2 && abs(endY / 80 - mouseY / 80) == 2)))
+    return;
+  
   int endX = e->x();
   int endY = e->y();
-  bool tryingToMove = abs((endX / 80) - (mouseX / 80)) == 1 && abs((endY / 80) - (mouseY / 80)) == 1;
-  bool tryingToJump = abs((endX / 80) - (mouseX / 80)) == 2 && abs((endY / 80) - (mouseY / 80)) == 2;
-
-  // check if trying to jump or just trying to move
+  // currently king == T
+  bool cK = selected->isKing();
+  // currently red == T or black == F
+  bool cR;
+  // trying to move == T or jump == F
+  bool M;
+  // is the end space empty?
+  bool eE = owner(endX,endY) == 0;
+  // move vector, something akin to (+- 2, +- 2) || (+- 1, +- 1)
+  std::pair<int,int> mV = std::make_pair(endX / 80 - mouseX / 80, endY / 80 - mouseY / 80);
+  // is the jumped piece Red?
+  bool nR;
   
-  if (tryingToMove) {
-    switch(owner(endX, endY)) {
-    case 0:
+
+  if (owner(mouseX,mouseY) == 2)
+    cR = true;
+  else if (owner(mouseX, mouseY) == 1)
+    cR = false;
+  
+  if (abs(endX / 80 - mouseX / 80) == 1 && abs(endY / 80 - mouseY / 80) == 1)
+    M = true;
+  else if (abs(endX / 80 - mouseX / 80) == 2 && abs(endY / 80 - mouseY / 80) == 2)
+    M = false;
+
+  if (owner((mouseX / 80 + mV.first) * 80, (mouseY / 80 + mV.second) * 80) == 2)
+    nR = true;
+  else if (owner((mouseX / 80 + mV.first) * 80, (mouseY / 80 + mV.second) * 80) == 1)
+    nR = false;
+  
+  if (cK) {
+    if (M) {
       
-      selected->setCords(std::make_pair(endX / 80, endY / 80));
-      repaint();
-    }
-  } else if (tryingToJump) {
-    Piece* jumpedPiece;
-    switch(owner(mouseX, mouseY)) {
-    case 1:
-      //black
-      // y should be positive and linear with x
-      if ((endX / 80) - (mouseX / 80) == 2 && (endY / 80) - (mouseY / 80) == 2) {
-	switch (owner(mouseX + 80, mouseY + 80)) {
-	  // move and remove red piece
-    case 2:
-	  for (auto a : Red) {
-          qDebug() << a->getCords().second << a->getCords().first;
-        if (a->compareCords(std::make_pair((mouseX / 80) + 1, (mouseY / 80) + 1))){
-          jumpedPiece = a;
-          break;
-	    }
-	  }
-	  Red.erase(std::find(Red.begin(), Red.end(), jumpedPiece));
-	  selected->setCords(std::make_pair(endX / 80, endY / 80));
-	  repaint();
-	  break;
+    } else {
+      if (cR && !nR) {
+	
+      } else if (!cR && nR) {
+	
+      }      
+    }     
+  } else {
+    if (M) {
+      if (cR) {
+	if (mV.first == -1 && mV.second == -1) {
+	  
+	} else if (mV.first == 1 && mV.second == -1) {
+	  
 	}
-      } else if ((endX / 80) - (mouseX / 80) == -2 && (endY / 80) - (mouseY / 80) == 2) {
-	switch (owner(mouseX - 80, mouseY + 80)) {
-	case 2:
-	  // move and remove red piece
-	  for (auto a : Red) {
-        if (a->compareCords(std::make_pair((mouseX / 80) - 1, (mouseY / 80) + 1))) {
-	      jumpedPiece = a;
-	      break;
-	    }
-	  }
-	  Red.erase(std::find(Red.begin(), Red.end(), jumpedPiece));
-	  selected->setCords(std::make_pair(endX / 80, endY / 80));
-	  repaint();
+      } else {
+	if (mV.first == -1 && mV.second == 1) {
+	  
+	} else if (mV.first == 1 && mV.second == 1) {
+	  
 	}
       }
-      break;
-    case 2:
-      // red
-      // y should be negitaive and linear with x
-      if ((endX / 80) - (mouseX / 80) == 2 && (endY / 80) - (mouseY / 80) == -2) {
-	switch (owner(mouseX + 80, mouseY - 80)) {
-	case 1:
-	  for (auto a : Black) {
-        if (a->compareCords(std::make_pair((mouseX / 80) + 1, (mouseY / 80) - 1))) {
-	      jumpedPiece = a;
-	      break;
-	    }
-	  }
-	  Black.erase(std::find(Black.begin(), Black.end(), jumpedPiece));
-	  selected->setCords(std::make_pair(endX / 80, endY / 80));
-	  repaint();
+    } else {
+      if (cR && !nR) {
+        if (mV.first == -2 && mV.second == -2) {
+	  
+	} else if (mV.first == 2 && mV.second == -2) {
+	  
 	}
-      } else if ((endX / 80) - (mouseX / 80) == -2 && (endY / 80) - (mouseY / 80) == -2){
-	switch (owner(mouseX - 80, mouseY - 80)) {
-	case 1:
-	  for (auto a : Black) {
-        if (a->compareCords(std::make_pair((mouseX / 80) - 1, (mouseY / 80) - 1))) {
-	      jumpedPiece = a;
-	      break;
-	    }
-	  }
-	  Black.erase(std::find(Black.begin(), Black.end(), jumpedPiece));
-	  selected->setCords(std::make_pair(endX / 80, endY / 80));
-	  repaint();	  
-	}
+      } else if (!nR && nR) {
+	if (mV.first == -2 && mV.second == 2) {
+	  
+	} else if (mV.first == 2 && mV.second == 2) {
+	  
+	}	
       }
-      break;
     }
   }
-}
 
 void MainWindow::drawPieces(QPainter *p)
 {  
