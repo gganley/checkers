@@ -85,11 +85,13 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 	// if move
 	(abs(endX / 80 - mouseX / 80) == 1 && abs(endY / 80 - mouseY / 80) == 1)
 	// if jump
-     || (abs(endX / 80 - mouseX / 80) == 2 && abs(endY / 80 - mouseY / 80) == 2)))
+	|| (abs(endX / 80 - mouseX / 80) == 2 && abs(endY / 80 - mouseY / 80) == 2))) {    
     return;
+  }
+    
+    
   
-  int endX = e->x();
-  int endY = e->y();
+
   // currently king == T
   bool cK = selected->isKing();
   // currently red == T or black == F
@@ -102,8 +104,11 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
   std::pair<int,int> mV = std::make_pair(endX / 80 - mouseX / 80, endY / 80 - mouseY / 80);
   // is the jumped piece Red?
   bool nR;
+  // piece being jumped
+  Piece* nP;
   
-
+  
+  
   if (owner(mouseX,mouseY) == 2)
     cR = true;
   else if (owner(mouseX, mouseY) == 1)
@@ -114,52 +119,111 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
   else if (abs(endX / 80 - mouseX / 80) == 2 && abs(endY / 80 - mouseY / 80) == 2)
     M = false;
 
-  if (owner((mouseX / 80 + mV.first) * 80, (mouseY / 80 + mV.second) * 80) == 2)
-    nR = true;
-  else if (owner((mouseX / 80 + mV.first) * 80, (mouseY / 80 + mV.second) * 80) == 1)
-    nR = false;
+  // initialize nR
+  {
+    int xtemp = mouseX / 80 + mV.first / 2;
+    int ytemp = mouseY / 80 + mV.second / 2;
+
+    if (owner(xtemp * 80, ytemp * 80) == 2) {
+      nR = true;
+      for (auto n : Red) 
+	if (n->compareCords(xtemp, ytemp)) 
+	  nP = n;                        
+    } else if (owner(xtemp * 80, ytemp * 80) == 1) {
+      nR = false;
+      for (auto n : Black) 
+	if (n->compareCords(xtemp, ytemp)) 
+	  nP = n;	      
+    }
+  }
   
+  // main moveing logic
   if (cK) {
     if (M) {
-      
-    } else {
+      if (eE) {
+	selected->setPos(endX, endY);
+	repaint();
+      }
+    } else {      
       if (cR && !nR) {
-	
+	if (eE) {          
+	  selected->setPos(endX,endY);
+	  Black.erase(std::find(Black.begin(), Black.end(), nP));
+	  repaint();
+	}
       } else if (!cR && nR) {
-	
+	if (eE) {
+	  selected->setPos(endX, endY);
+	  Red.erase(std::find(Red.begin(), Red.end(), nP));
+	  repaint();
+	}
       }      
     }     
   } else {
     if (M) {
       if (cR) {
 	if (mV.first == -1 && mV.second == -1) {
-	  
+	  if (eE) {
+	    selected->setPos(endX, endY);
+	    repaint();
+	  }	  
 	} else if (mV.first == 1 && mV.second == -1) {
-	  
+	  if (eE) {
+	    selected->setPos(endX, endY);
+	    repaint();
+	  }	  
 	}
       } else {
 	if (mV.first == -1 && mV.second == 1) {
+	  if (eE) {
+	    selected->setPos(endX, endY);
+	    repaint();
+	  }	  
 	  
 	} else if (mV.first == 1 && mV.second == 1) {
-	  
+	  if (eE) {
+	    selected->setPos(endX, endY);
+	    repaint();
+	  }	  
 	}
       }
     } else {
+      
+      
       if (cR && !nR) {
         if (mV.first == -2 && mV.second == -2) {
-	  
+	  if (eE) {
+	    selected->setPos(endX,endY);
+	    Black.erase(std::find(Black.begin(), Black.end(), nP));
+	    repaint();
+	  }	  
 	} else if (mV.first == 2 && mV.second == -2) {
-	  
+	  if (eE) {
+	    selected->setPos(endX,endY);
+	    Black.erase(std::find(Black.begin(), Black.end(), nP));
+	    repaint();
+	  } 
 	}
-      } else if (!nR && nR) {
+      } else if (!cR && nR) {
 	if (mV.first == -2 && mV.second == 2) {
-	  
-	} else if (mV.first == 2 && mV.second == 2) {
-	  
+	  if (eE) {
+	    selected->setPos(endX,endY);
+	    Red.erase(std::find(Red.begin(), Red.end(), nP));
+	    repaint();
+	  }
+	} else if (mV.first == 2 && mV.second == 2) {          
+	  if (eE) {            
+	    selected->setPos(endX,endY);                    
+	    Red.erase(std::find(Red.begin(), Red.end(), nP));
+            
+	    repaint();
+	  }	  
 	}	
       }
     }
   }
+  turn = !turn;
+}
 
 void MainWindow::drawPieces(QPainter *p)
 {  

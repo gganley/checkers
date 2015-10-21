@@ -17,6 +17,12 @@ void Piece::setPos(std::pair<int,int> n)
   posY = n.second;
 }
 
+void Piece::setPos(int x, int y)
+{
+  posX = (x / 80) * 80 + 40;
+  posY = (y / 80) * 80 + 40;
+}
+
 void Piece::setCords(std::pair<int,int> n)
 {
   posX = n.first * 80 + 40;
@@ -28,6 +34,13 @@ bool Piece::compareCords(std::pair<int,int> n)
   if (posX / 80 == n.first && posY / 80 == n.second)
     return true;
 
+  return false;
+}
+
+bool Piece::compareCords(int x, int y)
+{
+  if (posX / 80 == x && posY / 80 == y)
+    return true;
   return false;
 }
 
