@@ -4,6 +4,18 @@ void Piece::draw(QPainter *e)
 {
   e->setBrush(c);
   e->drawEllipse(QPoint(posX,posY), 40, 40);
+  if (isKing()) {
+    int yUpperBound = (posY / 80) * 80;
+    int xLeftBound = (posX / 80) * 80;
+    
+    e->setPen(QColor(255,255,255));
+    e->drawLine(xLeftBound + 40, yUpperBound + 10, xLeftBound + 40, yUpperBound + 70);
+    e->drawLine(xLeftBound + 25, yUpperBound + 25, xLeftBound + 55, yUpperBound + 25);
+
+  } 
+  
+
+
 }
 
 std::pair<int,int> Piece::getPos()

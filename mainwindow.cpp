@@ -43,6 +43,7 @@ void MainWindow::paintEvent(QPaintEvent *)
   QPainter *p = new QPainter(this);
 
   // BOARD ISNT DRAWING WTF
+  anyNewKings();
   drawBoard(p);
   drawPieces(p);
 }
@@ -67,7 +68,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     }
     break;
   }
-     
+  
   // check if turn owner owns the piece
   // bind checker piece to move with cursor
 }
@@ -75,6 +76,14 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 {
+  // check turn
+  if (owner(mouseX, mouseY) == 2 && !turn)
+    return;
+  if (owner(mouseX, mouseY) == 1 && turn)
+    return;
+  
+  int endX = e->x();
+  int endY = e->y();
   // check if you pressed a piece
   if (owner(mouseX,mouseY) == 0)
     return;
@@ -282,4 +291,14 @@ int MainWindow::owner(int x, int y)
     }
   }
   return 0;
+}
+
+void MainWindow::anyNewKings()
+{
+  for (auto p : Red) 
+    if (p->getCords().second == 0)
+      p->setKing(true);
+  for (auto p : Black) 
+    if (p->getCords().second == 7)
+      p->setKing(true);  
 }

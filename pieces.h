@@ -4,6 +4,7 @@
 #include <QPaintDevice>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QPen>
 
 #include <utility>
 
@@ -20,8 +21,10 @@ public:
   std::pair<int,int> getPos();
   std::pair<int,int> getCords();
   void setPos(std::pair<int,int>);
+  void setPos(int,int);
   void setCords(std::pair<int,int>);
   bool compareCords(std::pair<int,int>);
+  bool compareCords(int x, int y);
   bool isKing();
   void setKing(bool x);
 };

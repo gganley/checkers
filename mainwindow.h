@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow
   int mouseX, mouseY;
   bool turn = true; // true == red, false == black
   Piece* selected;
+  
 public:
   MainWindow(QWidget *parent = 0);
   void paintEvent(QPaintEvent *);
@@ -26,6 +27,7 @@ public:
   
   void drawPieces(QPainter *);
   int owner(int x, int y);
+  void anyNewKings();
   ~MainWindow();
 };
 
