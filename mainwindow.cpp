@@ -102,44 +102,44 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
   
 
   // currently king == T
-  bool cK = selected->isKing();
+  bool currentKing = selected->isKing();
   // currently red == T or black == F
-  bool cR;
+  bool currentlyRed;
   // trying to move == T or jump == F
-  bool M;
+  bool isMoving;
   // is the end space empty?
-  bool eE = owner(endX,endY) == 0;
+  bool endEmpty = owner(endX,endY) == 0;
   // move vector, something akin to (+- 2, +- 2) || (+- 1, +- 1)
   std::pair<int,int> mV = std::make_pair(endX / 80 - mouseX / 80, endY / 80 - mouseY / 80);
   // is the jumped piece Red?
-  bool nR;
+  bool nextRed;
   // piece being jumped
   Piece* nP;
   
   
   
   if (owner(mouseX,mouseY) == 2)
-    cR = true;
+    currentlyRed = true;
   else if (owner(mouseX, mouseY) == 1)
-    cR = false;
+    currentlyRed = false;
   
   if (abs(endX / 80 - mouseX / 80) == 1 && abs(endY / 80 - mouseY / 80) == 1)
-    M = true;
+    isMoving = true;
   else if (abs(endX / 80 - mouseX / 80) == 2 && abs(endY / 80 - mouseY / 80) == 2)
-    M = false;
+    isMoving = false;
 
-  // initialize nR
+  // initialize nextRed
   {
     int xtemp = mouseX / 80 + mV.first / 2;
     int ytemp = mouseY / 80 + mV.second / 2;
 
     if (owner(xtemp * 80, ytemp * 80) == 2) {
-      nR = true;
+      nextRed = true;
       for (auto n : Red) 
 	if (n->compareCords(xtemp, ytemp)) 
 	  nP = n;                        
     } else if (owner(xtemp * 80, ytemp * 80) == 1) {
-      nR = false;
+      nextRed = false;
       for (auto n : Black) 
 	if (n->compareCords(xtemp, ytemp)) 
 	  nP = n;	      
@@ -147,21 +147,21 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
   }
   
   // main moveing logic
-  if (cK) {
-    if (M) {
-      if (eE) {
+  if (currentKing) {
+    if (isMoving) {
+      if (endEmpty) {
 	selected->setPos(endX, endY);
 	repaint();
       }
     } else {      
-      if (cR && !nR) {
-	if (eE) {          
+      if (currentlyRed && !nextRed) {
+	if (endEmpty) {          
 	  selected->setPos(endX,endY);
 	  Black.erase(std::find(Black.begin(), Black.end(), nP));
 	  repaint();
 	}
-      } else if (!cR && nR) {
-	if (eE) {
+      } else if (!currentlyRed && nextRed) {
+	if (endEmpty) {
 	  selected->setPos(endX, endY);
 	  Red.erase(std::find(Red.begin(), Red.end(), nP));
 	  repaint();
@@ -169,28 +169,28 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
       }      
     }     
   } else {
-    if (M) {
-      if (cR) {
+    if (isMoving) {
+      if (currentlyRed) {
 	if (mV.first == -1 && mV.second == -1) {
-	  if (eE) {
+	  if (endEmpty) {
 	    selected->setPos(endX, endY);
 	    repaint();
 	  }	  
 	} else if (mV.first == 1 && mV.second == -1) {
-	  if (eE) {
+	  if (endEmpty) {
 	    selected->setPos(endX, endY);
 	    repaint();
 	  }	  
 	}
       } else {
 	if (mV.first == -1 && mV.second == 1) {
-	  if (eE) {
+	  if (endEmpty) {
 	    selected->setPos(endX, endY);
 	    repaint();
 	  }	  
 	  
 	} else if (mV.first == 1 && mV.second == 1) {
-	  if (eE) {
+	  if (endEmpty) {
 	    selected->setPos(endX, endY);
 	    repaint();
 	  }	  
@@ -199,29 +199,29 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
     } else {
       
       
-      if (cR && !nR) {
+      if (currentlyRed && !nextRed) {
         if (mV.first == -2 && mV.second == -2) {
-	  if (eE) {
+	  if (endEmpty) {
 	    selected->setPos(endX,endY);
 	    Black.erase(std::find(Black.begin(), Black.end(), nP));
 	    repaint();
 	  }	  
 	} else if (mV.first == 2 && mV.second == -2) {
-	  if (eE) {
+	  if (endEmpty) {
 	    selected->setPos(endX,endY);
 	    Black.erase(std::find(Black.begin(), Black.end(), nP));
 	    repaint();
 	  } 
 	}
-      } else if (!cR && nR) {
+      } else if (!currentlyRed && nextRed) {
 	if (mV.first == -2 && mV.second == 2) {
-	  if (eE) {
+	  if (endEmpty) {
 	    selected->setPos(endX,endY);
 	    Red.erase(std::find(Red.begin(), Red.end(), nP));
 	    repaint();
 	  }
 	} else if (mV.first == 2 && mV.second == 2) {          
-	  if (eE) {            
+	  if (endEmpty) {            
 	    selected->setPos(endX,endY);                    
 	    Red.erase(std::find(Red.begin(), Red.end(), nP));
             
